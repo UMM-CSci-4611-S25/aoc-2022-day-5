@@ -4,6 +4,9 @@
   - [Part 1](#part-1)
   - [Part 2](#part-2)
 - [Sketch of key data structures and trait implementations](#sketch-of-key-data-structures-and-trait-implementations)
+  - [Add error variants as you go](#add-error-variants-as-you-go)
+  - [Parsing stacks and instructions](#parsing-stacks-and-instructions)
+  - [Implementing `PartialEq<Vec<char>> for Stack`](#implementing-partialeqvecchar-for-stack)
 
 ---
 
@@ -162,6 +165,74 @@ Before the rearrangement process finishes, update your simulation so that the El
 
 ## Sketch of key data structures and trait implementations
 
-In `part1.rs` we have the key data structures, and stubs for some of the important
-trait implementations used in parsing the input. We also have stubs for the two
-major `Stacks` methods (`apply_instructions()` and `tops_string()`).
+In `part1.rs` we have 
+
+- The key data structures (`Stacks`, `Stack`, `CraneInstructions`, and `CraneInstruction`)
+- Stubs for two error types (`ParseError` and `CraneError`)
+- Stubs for some of the key `Stacks` methods (`apply_instruction`, `apply_instructions`, and `tops_string`) that are needed in `main` and the tests.
+  - You'll almost certainly want more methods in various types, so feel free to
+    create them as you go.
+- Stubs for some of the important trait implementations used in parsing the input.
+- Stub for `impl PartialEq<Vec<char>> for Stack` so we can compare a `Stack` and
+  a `Vec<char>` in the tests.
+
+### Add error variants as you go
+
+The two stubs for error types (`ParseError` and `CraneError`) start out as empty
+`enums`. You'll want to add variants to capture various potential error cases as you
+discover them. The stack specification lines, for example, are supposed to start with
+a number. If parsing that bit of the string to an integer fails, you might want to capture
+that in something like a `StackIdParseError` error:
+
+```rust
+enum ParseError {
+    StackIdParseError,
+}
+```
+
+If you really want to get fancy, you might even capture the parsing error so that gets
+reported back to the user:
+
+```rust
+enum ParseError {
+    StackIdParseError(ParseIntError),
+}
+```
+
+### Parsing stacks and instructions
+
+You'll almost certainly want to use functions such as `.lines()`
+and `split_ascii_whitespace()` to aid in the parsing.
+
+Make sure you check that strings you get after you split stack lines all have single
+characters, and return an appropriate variant of `ParseError` if they don't.
+
+Parsing the crane instructions is a little odd since the first, third, and fifth
+element in an instruction don't add any content since they're always the same. Probably the
+easist solution is to just reach into the results of splitting that line and getting
+items 1, 3, and 5, which contain the bits that you want. For something fancier (which
+you can totally ignore) I actually took advantage of the fact that all those indices
+were odd and use `filter` to get those elements from the line and parsed them all in
+one go with `map`.
+
+### Implementing `PartialEq<Vec<char>> for Stack`
+
+In the tests, it's nice if you can directly compare a vector of characters and a
+`Stack` with something like:
+
+```rust
+assert_eq!(stacks.stack[0], vec!['Z', 'N'])
+```
+
+This won't work "out of the box" because the types don't match. We can, however,
+
+```rust
+impl PartialEq<Vec<char>> for Stack
+```
+
+which gives us a `.eq()` method on stacks, so we can say things like `stack.eq(vec)`.
+The cool thing is that this also lets us write `stack == vec`, or even the `assert_eq!()`
+above.
+
+This isn't something we need to actually solve the problem, but it makes it a lot
+nicer to write the tests, so I figured I'd include it.

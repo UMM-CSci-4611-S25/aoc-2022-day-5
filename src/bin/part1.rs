@@ -41,7 +41,7 @@ fn main() {
 #[derive(Debug)]
 pub enum ParseError {
     // Add different variants as you discover different kinds of parsing errors.
-    // This could include things like too many stacks, too many characters in a stack, etc.
+    // This could include things like too many stacks, illegal strings on a stack, etc.
 }
 
 const NUM_STACKS: usize = 9;
@@ -53,10 +53,10 @@ pub struct Stacks {
 
 #[derive(Debug)]
 enum CraneError {
-    // Add different variants as you discover different kinds of errors.
+    // Add different variants as you discover different kinds of errors
+    // that can occur when applying a crane instruction.
     // This could include things like trying to move from an empty stack,
     // trying to get the top of an empty stack, etc.
-    EmptyStack,
 }
 
 impl Stacks {
@@ -115,6 +115,10 @@ impl FromStr for Stack {
     }
 }
 
+// Implementing `PartialEq<Vec<char>> for Stack` here allows us to
+// say things like `vec!['A', 'B', 'C'] == stack`. This is useful
+// for testing, where we might want to compare a `Stack` to a `Vec<char>`
+// using something like ``assert_eq!(stack, vec!['A', 'B', 'C'])`.
 impl PartialEq<Vec<char>> for Stack {
     fn eq(&self, other: &Vec<char>) -> bool {
         todo!()
@@ -155,7 +159,9 @@ impl FromStr for CraneInstructions {
 }
 
 // Don't consider these tests complete or comprehensive. They're just a starting point,
-// and you should add more tests to make sure your code works as expected.
+// and you should add more tests to make sure your code works as expected. They all
+// start out with the `#[ignore]` attribute, so you'll need to remove that to run them
+// as you implement them.
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -172,8 +178,8 @@ mod tests {
         #[allow(clippy::unwrap_used)]
         let stacks: Stacks = input.parse().unwrap();
         assert_eq!(2, stacks.stacks[0].len());
-        // These comparisons are kinda icky, TBH. It would be cleaner to implement
-        // `PartialEq` for `Stack` and then just compare the whole stack.
+        // The implementation of `PartialEq<Vec<char>>` above is what allows
+        // us to compare a `Stack` to a `Vec<char>` here and in other tests.
         assert_eq!(stacks.stacks[0], vec!['Z', 'N']);
         assert_eq!(3, stacks.stacks[1].len());
         assert_eq!(stacks.stacks[1], vec!['M', 'C', 'D']);
@@ -238,8 +244,8 @@ mod tests {
             .apply_instruction(&instruction)
             .expect("Failed to apply instruction");
 
-        assert_eq!(vec!['A'], new_stacks.stacks[0].stack);
-        assert_eq!(vec!['D', 'E', 'F', 'C', 'B'], new_stacks.stacks[1].stack);
+        assert_eq!(new_stacks.stacks[0], vec!['A']);
+        assert_eq!(new_stacks.stacks[1], vec!['D', 'E', 'F', 'C', 'B']);
     }
 
     // This essentially runs `main()` and checks that the results are correct for part 1.
