@@ -1,3 +1,8 @@
+// FEEL FREE TO IGNORE (OR EVEN DELETE) THIS FILE.
+// This is just the code I used to rotate the original, more complex
+// stack representation into the simpler one we're using now. I'm
+// keeping it around in case I need to refer back to it later.
+
 #![warn(clippy::pedantic)]
 #![warn(clippy::nursery)]
 #![warn(clippy::unwrap_used)]
