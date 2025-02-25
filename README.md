@@ -1,10 +1,17 @@
-# Advent of Code 2022, Day 5, Parts 1 and 2
+# Advent of Code 2022, Day 5, Parts 1 and 2 <!-- omit from toc -->
+
+- [Problem statement](#problem-statement)
+  - [Part 1](#part-1)
+  - [Part 2](#part-2)
+- [Sketch of key data structures and trait implementations](#sketch-of-key-data-structures-and-trait-implementations)
+
+---
 
 Here we'll do another simple Rust exercise based on an Advent of Code problem,
 this time from 2022, [Day 5: Supply Stacks](https://adventofcode.com/2022/day/5).
 
 > [!IMPORTANT]
-> I've simplified the inputs on this problem to the parsing will be a lot easier.
+> I've simplified the inputs on this problem so the parsing will be a lot easier.
 > Make sure you base your parsing on the input structure in the provided `input.txt`
 > file and as described in the problem descriptions below.
 
@@ -73,7 +80,7 @@ Then, the rearrangement procedure is given. In each step of the procedure, a qua
 
 In the second step, three crates are moved from stack 1 to stack 3. Crates are moved one at a time, so the first crate to be moved (D) ends up below the second and third crates:
 
-```
+```text
 1
 2 M C
 3 P D N Z
